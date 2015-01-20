@@ -10,7 +10,7 @@
 	},
 	"require": {
 		"laravel/framework": "4.1.*",
-		"cartalyst/sentry": "2.0.*",
+		"cartalyst/sentry": "2.1.*",
 		"barryvdh/laravel-debugbar": "1.x",
 		"chumper/datatable": "dev-master",
 		"bacon/bacon-qr-code": "dev-master",
@@ -49,5 +49,5 @@
 		"bin-dir": "bin"
 
 	},
-	"minimum-stability": "dev"
+	"minimum-stability": "stable"
 }
