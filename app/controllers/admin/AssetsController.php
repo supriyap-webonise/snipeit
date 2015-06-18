@@ -21,6 +21,9 @@ use Response;
 use Config;
 use Location;
 use Log;
+use OperatingSystem;
+use Device;
+use Ram;
 
 use BaconQrCode\Renderer\Image as QrImage;
 
@@ -104,6 +107,9 @@ class AssetsController extends AdminController
         ->lists('name', 'id');
 
 
+        $os_list = array('' => '') + OperatingSystem::orderBy('name', 'asc')->lists('name', 'id');
+        $device_list = array('' => '') + Device::orderBy('name', 'asc')->lists('name', 'id');
+        $ram_list = array('' => '') + Ram::orderBy('name', 'asc')->lists('name', 'id');
         $supplier_list = array('' => '') + Supplier::orderBy('name', 'asc')->lists('name', 'id');
         $assigned_to = array('' => 'Select a User') + DB::table('users')->select(DB::raw('concat (first_name," ",last_name) as full_name, id'))->whereNull('deleted_at')->lists('full_name', 'id');
         $location_list = array('' => '') + Location::orderBy('name', 'asc')->lists('name', 'id');
@@ -113,6 +119,9 @@ class AssetsController extends AdminController
         $statuslabel_list = array('' => Lang::get('general.pending')) + array('0' => Lang::get('general.ready_to_deploy')) + Statuslabel::orderBy('name', 'asc')->lists('name', 'id');
 
         $view = View::make('backend/hardware/edit');
+        $view->with('os_list',$os_list);
+        $view->with('device_list',$device_list);
+        $view->with('ram_list',$ram_list);
         $view->with('supplier_list',$supplier_list);
         $view->with('model_list',$model_list);
         $view->with('statuslabel_list',$statuslabel_list);
@@ -191,12 +200,23 @@ class AssetsController extends AdminController
                 $asset->requestable        = e(Input::get('requestable'));
             }
 
-            if (e(Input::get('rtd_location_id')) == '') {
-                $asset->rtd_location_id = NULL;
+            if ( e(Input::get('device')) == '') {
+                $asset->device_id =  NULL;
             } else {
-                $asset->rtd_location_id     = e(Input::get('rtd_location_id'));
+                $asset->device_id = e(Input::get('device'));
             }
 
+            if ( e(Input::get('operating_system')) == '') {
+                $asset->os_id =  NULL;
+            } else {
+                $asset->os_id = e(Input::get('operating_system'));
+            }
+
+            if ( e(Input::get('operating_system')) == '') {
+                $asset->ram_id =  NULL;
+            } else {
+                $asset->ram_id = e(Input::get('ram'));
+            }
             // Save the asset data
             $asset->name            		= e(Input::get('name'));
             $asset->serial            		= e(Input::get('serial'));
@@ -242,11 +262,14 @@ class AssetsController extends AdminController
         $model_list = array('' => '') + Model::orderBy('name', 'asc')->lists('name', 'id');
         $supplier_list = array('' => '') + Supplier::orderBy('name', 'asc')->lists('name', 'id');
         $location_list = array('' => '') + Location::orderBy('name', 'asc')->lists('name', 'id');
+        $os_list = array('' => '') + OperatingSystem::orderBy('name', 'asc')->lists('name', 'id');
+        $device_list = array('' => '') + Device::orderBy('name', 'asc')->lists('name', 'id');
+        $ram_list = array('' => '') + Ram::orderBy('name', 'asc')->lists('name', 'id');
 
         // Grab the dropdown list of status
         $statuslabel_list = array('' => Lang::get('general.pending')) + array('0' => Lang::get('general.ready_to_deploy')) + Statuslabel::orderBy('name', 'asc')->lists('name', 'id');
 
-        return View::make('backend/hardware/edit', compact('asset'))->with('model_list',$model_list)->with('supplier_list',$supplier_list)->with('location_list',$location_list)->with('statuslabel_list',$statuslabel_list);
+        return View::make('backend/hardware/edit', compact('asset'))->with('model_list',$model_list)->with('supplier_list',$supplier_list)->with('location_list',$location_list)->with('statuslabel_list',$statuslabel_list)->with('os_list',$os_list)->with('device_list',$device_list)->with('ram_list',$ram_list);
     }
 
 
@@ -318,6 +341,23 @@ class AssetsController extends AdminController
                 $asset->rtd_location_id     = e(Input::get('rtd_location_id'));
             }
 
+            if ( e(Input::get('device')) == '') {
+                $asset->device_id =  NULL;
+            } else {
+                $asset->device_id = e(Input::get('device'));
+            }
+
+            if ( e(Input::get('operating_system')) == '') {
+                $asset->os_id =  NULL;
+            } else {
+                $asset->os_id = e(Input::get('operating_system'));
+            }
+
+            if ( e(Input::get('operating_system')) == '') {
+                $asset->ram_id =  NULL;
+            } else {
+                $asset->ram_id = e(Input::get('ram'));
+            }
             // Update the asset data
             $asset->name            		= e(Input::get('name'));
             $asset->serial            		= e(Input::get('serial'));
@@ -326,7 +366,6 @@ class AssetsController extends AdminController
             $asset->asset_tag           	= e(Input::get('asset_tag'));
             $asset->notes            		= e(Input::get('notes'));
             $asset->physical            	= '1';
-
             // Was the asset updated?
             if($asset->save()) {
                 // Redirect to the new asset page
@@ -593,7 +632,9 @@ class AssetsController extends AdminController
 
         // Grab the dropdown list of models
         $model_list = array('' => '') + Model::lists('name', 'id');
-
+        $os_list = array('' => '') + OperatingSystem::orderBy('name', 'asc')->lists('name', 'id');
+        $device_list = array('' => '') + Device::orderBy('name', 'asc')->lists('name', 'id');
+        $ram_list = array('' => '') + Ram::orderBy('name', 'asc')->lists('name', 'id');
         // Grab the dropdown list of status
         $statuslabel_list = array('' => 'Pending') + array('0' => 'Ready to Deploy') + Statuslabel::lists('name', 'id');
 
@@ -607,7 +648,7 @@ class AssetsController extends AdminController
         $asset = clone $asset_to_clone;
         $asset->id = null;
         $asset->asset_tag = '';
-        return View::make('backend/hardware/edit')->with('supplier_list',$supplier_list)->with('model_list',$model_list)->with('statuslabel_list',$statuslabel_list)->with('assigned_to',$assigned_to)->with('asset',$asset)->with('location_list',$location_list);
+        return View::make('backend/hardware/edit')->with('supplier_list',$supplier_list)->with('model_list',$model_list)->with('statuslabel_list',$statuslabel_list)->with('assigned_to',$assigned_to)->with('asset',$asset)->with('location_list',$location_list)->with('os_list',$os_list)->with('device_list',$device_list)->with('ram_list',$ram_list);
 
     }
 }

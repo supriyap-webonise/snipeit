@@ -30,7 +30,8 @@
     <div class="row profile">
         <div class="col-md-9">
 
-           {{ Form::open(['method' => 'POST', 'files' => true, 'class' => 'form-horizontal', 'autocomplete' => 'off' ]) }}
+
+            <form class="form-horizontal" method="post" action="" autocomplete="off" enctype="multipart/form-data">
                 <!-- CSRF Token -->
                 {{ Form::token() }}
 

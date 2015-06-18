@@ -40,6 +40,18 @@
             <!-- CSRF Token -->
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
+             <!-- Device -->
+             <div class="form-group {{ $errors->has('device') ? ' has-error' : '' }}">
+                 <label for="device" class="col-md-2 control-label">@lang('admin/hardware/form.device')</label>
+                 <div class="col-md-7">
+                     @if (isset($selected_device))
+                     {{ Form::select('device', $device_list , $selected_device->id, array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @else
+                     {{ Form::select('device', $device_list , Input::old('device_id', $asset->device_id), array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @endif
+                 </div>
+             </div>
+
             <!-- Asset Tag -->
             <div class="form-group {{ $errors->has('asset_tag') ? ' has-error' : '' }}">
                 <label for="asset_tag" class="col-md-2 control-label">@lang('admin/hardware/form.tag')
@@ -88,6 +100,36 @@
                     {{ $errors->first('model_id', '<span class="alert-msg"><i class="icon-remove-sign"></i> :message</span>') }}
                 </div>
             </div>
+
+             <!-- RAM -->
+             <div class="form-group {{ $errors->has('ram') ? ' has-error' : '' }}">
+                 <label for="ram" class="col-md-2 control-label">@lang('admin/hardware/form.ram')
+                     <i class='icon-asterisk'></i></label>
+                 <div class="col-md-7">
+                     @if (isset($selected_ram))
+                     {{ Form::select('ram', $ram_list , $selected_ram->id, array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @else
+                     {{ Form::select('ram', $ram_list , Input::old('ram_id', $asset->ram_id), array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @endif
+                     {{ $errors->first('ram', '<span class="alert-msg"><i class="icon-remove-sign"></i> :message</span>') }}
+                 </div>
+             </div>
+
+
+
+             <!-- Operating Sysytem -->
+             <div class="form-group {{ $errors->has('operating system') ? ' has-error' : '' }}">
+                 <label for="operating system" class="col-md-2 control-label">@lang('admin/hardware/form.operatingsystem')
+                     <i class='icon-asterisk'></i></label>
+                 <div class="col-md-7">
+                     @if (isset($selected_operating_system))
+                     {{ Form::select('operating_system', $os_list , $selected_operating_system->id, array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @else
+                     {{ Form::select('operating_system', $os_list , Input::old('os_id', $asset->os_id), array('class'=>'select2', 'style'=>'min-width:400px')) }}
+                     @endif
+                     {{ $errors->first('operating_system', '<span class="alert-msg"><i class="icon-remove-sign"></i> :message</span>') }}
+                 </div>
+             </div>
 
             <!-- Purchase Date -->
             <div class="form-group {{ $errors->has('purchase_date') ? ' has-error' : '' }}">
